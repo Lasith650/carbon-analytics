@@ -147,6 +147,26 @@ define(([],function (){
                 },
                 disabled: false
             },
+
+            {
+                id: "deploy",
+                label: "Deploy File",
+                command: {
+                    id: "deploy",
+                    shortcuts: {
+                        mac: {
+                            key: "command+w",
+                            label: "\u2318W"
+                        },
+                        other: {
+                            key: "ctrl+w",
+                            label: "Ctrl+W"
+                        }
+                    }
+                },
+                disabled: false
+            },
+
             {
                 id: "close",
                 label: "Close File",

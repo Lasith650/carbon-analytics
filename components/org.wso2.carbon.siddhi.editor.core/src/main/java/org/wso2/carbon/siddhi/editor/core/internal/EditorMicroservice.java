@@ -434,6 +434,53 @@ public class EditorMicroservice implements Microservice {
     }
 
     @POST
+    @Path("/workspace/deploy")
+    @Produces("application/json")
+    public Response deploy(String payload) {
+        try {
+            String location = (Paths.get(Constants.CARBON_HOME,
+                    Constants.DIRECTORY_WSO2, Constants.DIRECTORY_WORKER, Constants.DIRECTORY_WORKER_DEPLOYMENT)).toString();
+            String configName = "";
+            String config = "";
+            Matcher configNameMatcher = Pattern.compile("configName=(.*?)&").matcher(payload);
+            while (configNameMatcher.find()) {
+                configName = configNameMatcher.group(1);
+            }
+            String[] splitConfigContent = payload.split("config=");
+            if (splitConfigContent.length > 1) {
+                config = splitConfigContent[1];
+            }
+            byte[] base64Config = Base64.getDecoder().decode(config);
+            byte[] base64ConfigName = Base64.getDecoder().decode(configName);
+            java.nio.file.Path filePath = SecurityUtil.resolvePath(
+                    Paths.get(location).toAbsolutePath(),
+                    Paths.get(Constants.DIRECTORY_SIDDHI_FILES + System.getProperty(FILE_SEPARATOR) +
+                            new String(base64ConfigName, Charset.defaultCharset())));
+            Files.write(filePath, base64Config);
+            java.nio.file.Path fileNamePath = filePath.getFileName();
+            if (null != fileNamePath) {
+                String siddhiAppName = fileNamePath.toString().replace(Constants.SIDDHI_APP_FILE_EXTENSION, "");
+                if (null != EditorDataHolder.getDebugProcessorService().getSiddhiAppRuntimeHolder(siddhiAppName)) {
+                    //making the app faulty until the file gets deployed again for editor usage purposes
+                    EditorDataHolder.getDebugProcessorService().getSiddhiAppRuntimeHolder(siddhiAppName).setMode(
+                            DebugRuntime.Mode.FAULTY);
+                }
+            }
+            JsonObject entity = new JsonObject();
+            entity.addProperty(STATUS, SUCCESS);
+            entity.addProperty("path", Constants.DIRECTORY_SIDDHI_FILES);
+            return Response.status(Response.Status.OK).entity(entity)
+                    .type(MediaType.APPLICATION_JSON).build();
+        } catch (IOException e) {
+            return Response.serverError().entity("failed." + e.getMessage())
+                    .build();
+        } catch (Throwable ignored) {
+            return Response.serverError().entity("failed")
+                    .build();
+        }
+    }
+
+    @POST
     @Path("/workspace/read")
     @Produces("application/json")
     public Response read(String relativePath) {

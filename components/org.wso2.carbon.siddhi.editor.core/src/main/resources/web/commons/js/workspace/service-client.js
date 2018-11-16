@@ -241,5 +241,33 @@ define(['log', 'lodash', 'jquery', 'event_channel', './file'],
             return data;
         };
 
+
+        //deployment
+        ServiceClient.prototype.deployFile = function (file,content) {
+            var self = this;
+            var data = {};
+            $.ajax({
+                type: "POST",
+                context: this,
+                url: _.get(this.application, 'config.services.workspace.endpoint') + "/deploy",
+                data: "location=" + btoa(file.getPath()) + "&configName=" +
+                    btoa(file.getName()) + "&config=" + (btoa(content)),
+                contentType: "text/plain; charset=utf-8",
+                async: false,
+                success: function (response) {
+                    data = response;
+                    file.setDirty(false)
+                        .setLastPersisted(_.now())
+                        .save();
+                    log.debug("File " + file.getName() + ' saved successfully at '+ file.getPath());
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    data = getErrorFromResponse(xhr, textStatus, errorThrown);
+                    log.error(data.message);
+                }
+            });
+            return data;
+        };
+
         return ServiceClient;
     });

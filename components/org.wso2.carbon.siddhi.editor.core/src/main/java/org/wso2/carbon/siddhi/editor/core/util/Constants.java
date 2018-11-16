@@ -41,6 +41,15 @@ public class Constants {
     public static final String CARBON_HOME = Utils.getCarbonHome().normalize().toString();
     public static final String DIRECTORY_DEPLOYMENT = "deployment";
     public static final String DIRECTORY_WORKSPACE = "workspace";
+
+    //Constants used for the deployment------------------------------------
+    public static final String DIRECTORY_WSO2 = "wso2";
+    public static final String DIRECTORY_WORKER = "worker";
+    public static final String DIRECTORY_WORKER_DEPLOYMENT = "deployment";
+    public static final String DIRECTORY_SIDDHI_FILES = "siddhi-files";
+    //---------------------------------------------------------------------
+
+
     public static final String DIRECTORY_SAMPLE = "samples";
     public static final String DIRECTORY_ARTIFACTS = "artifacts";
     public static final String SIDDHI_APP_FILE_EXTENSION = ".siddhi";

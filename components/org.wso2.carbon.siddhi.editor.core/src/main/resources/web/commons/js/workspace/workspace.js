@@ -156,6 +156,61 @@ define(['ace/ace', 'jquery', 'lodash', 'log','dialogs','./service-client','welco
                 self.updateRunMenuItem();
             };
 
+            this.handleDeploy = function(option) {
+
+                var deployFileTab;
+                if ( option !== undefined && option.tabInstance !== undefined){
+                    deployFileTab = option.tabInstance;
+                } else {
+                    deployFileTab = app.tabController.getActiveTab();
+                }
+                var file = undefined;
+                var siddhiFileEditor;
+                var config = "";
+                var providedAppName = "";
+                var fileName = "";
+                var options = {};
+
+                if(deployFileTab.getTitle() != "welcome-page"){
+                    file = deployFileTab.getFile();
+                }
+
+                if(file !== undefined){
+
+                    if(file.isDirty()){
+                        //var activeTab = app.tabController.activeTab;
+                        var activeTab = deployFileTab;
+                        siddhiFileEditor= activeTab.getSiddhiFileEditor();
+                        config = siddhiFileEditor.getContent();
+                        var response = self._serviceClient.deployFile(file,config);
+                        if(response.error){
+                            alerts.error(response.message);
+                            self.updateRunMenuItem();
+                            return;
+                        } else {
+                            var trimmedSiddhiAppName = file.attributes.name;
+                            if (checkEndsWithSiddhi(trimmedSiddhiAppName)) {
+                                trimmedSiddhiAppName = trimmedSiddhiAppName.slice(0, -7);
+                            }
+                            app.commandManager.dispatch('remove-unwanted-streams-single-simulation',
+                                trimmedSiddhiAppName);
+                        }
+                        if(file.getRunStatus() || file.getDebugStatus()){
+                            var launcher = activeTab.getSiddhiFileEditor().getLauncher();
+                            launcher.stopApplication(app.workspaceManager, false);
+                        }
+                    }
+                    if(!_.isNil(options) && _.isFunction(options.callback)){
+                        options.callback(true);
+                    }
+
+                    // options.tabInstance = deployFileTab;
+                    // app.commandManager.dispatch('open-file-save-dialog', options);
+
+                }
+                self.updateRunMenuItem();
+            };
+
             this.handleUndo = function() {
 
                 // undo manager for current tab
@@ -657,6 +712,9 @@ define(['ace/ace', 'jquery', 'lodash', 'log','dialogs','./service-client','welco
             app.commandManager.registerHandler('create-new-tab', this.createNewTab);
 
             app.commandManager.registerHandler('save', this.handleSave, this);
+
+            //Deployment
+            app.commandManager.registerHandler('deploy', this.handleDeploy, this);
 
             app.commandManager.registerHandler('export', this.handleExport, this);
 
