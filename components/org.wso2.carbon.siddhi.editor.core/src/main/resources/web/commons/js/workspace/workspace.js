@@ -502,6 +502,55 @@ define(['ace/ace', 'jquery', 'lodash', 'log','dialogs','./service-client','welco
 //                }
 
             };
+            
+            this.handleDeploy = function () {
+                var value = handleDeploy();
+                console.log("value");
+                console.log(value);
+            };
+
+            function handleDeploy() {
+
+                console.log("11111");
+
+                if(_.isNil(this._handleDeploy)){
+                    this._handleDeploy = new Dialogs.deploy_file_dialog(app);
+                }
+                this._handleDeploy.render();
+                this._handleDeploy.show();
+
+                console.log("22222");
+
+
+                var data = {};
+                var workspaceServiceURL = app.config.services.workspace.endpoint;
+                var saveServiceURL = workspaceServiceURL + "/configurations";
+                //var payload = "configName=" + btoa(options.configName);
+
+                console.log("33333");
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "text/plain; charset=utf-8",
+                    url: saveServiceURL,
+                    //data: payload,
+                    async: false,
+                    success: function (response) {
+                        console.log(response);
+                        data = response;
+                        console.log(data);
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        data = client.getErrorFromResponse(xhr, textStatus, errorThrown);
+                        log.error(data.message);
+                        console.log("66666");
+                    }
+                });
+                console.log("44444");
+                return data;
+                console.log(data);
+                console.log("55555");
+            };
 
             this.openDeleteFileConfirmDialog = function openDeleteFileConfirmDialog(options) {
                 if(_.isNil(this._deleteFileDialog)){
@@ -710,6 +759,11 @@ define(['ace/ace', 'jquery', 'lodash', 'log','dialogs','./service-client','welco
 
             // Open Sample file open dialog
             app.commandManager.registerHandler('open-sample-file-open-dialog', this.openSampleFileOpenDialog, this);
+
+
+            app.commandManager.registerHandler('deploy-to-server', this.handleDeploy, this);
+
+
         }
     });
 

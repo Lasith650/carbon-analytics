@@ -24,7 +24,7 @@
 .file-dialog-form-scrollable-block{
     padding: 20px 20px;
     overflow: auto;
-    height:50%;
+    height:200px;
     width: 90%;
     background-color: #2C2C2C;
     margin-left: 30px;
@@ -117,4 +117,53 @@ hr.file-dialog-hr {
 .delete-confirm-dialog .file-dialog{
     width: 500px;
     top: 50px;
+}
+
+.file-dialog-form-toggle-left{
+    width: 140px;
+    background-color: #222222;
+    border-style: none;
+    height: 35px;
+    padding-left: 10px;
+    color: #fff;
+    alignment: left;
+}
+
+.file-dialog-form-toggle-right{
+    width: 140px;
+    background-color: #222222;
+    border-style: none;
+    height: 35px;
+    padding-left: 10px;
+    color: #fff;
+    alignment: right;
+}
+
+.file-dialog-form-new-sever-container{
+    padding: 20px 20px;
+    overflow: auto;
+    height: max-content;
+    width: 90%;
+    background-color: #2C2C2C;
+    margin-left: 30px;
+}
+
+.file-dialog-form-new-sever-container-toggle-divider{
+    width:18px;
+    height:auto;
+    display:inline-block;
+}
+
+.file-dialog-form-divider{
+    height: 15px;
+}
+
+.file-dialog-form-toggle{
+    width: 130px;
+    background-color: #222222;
+    border-style: none;
+    height: 35px;
+    padding-left: 10px;
+    color: #fff;
+    alignment: left;
 }

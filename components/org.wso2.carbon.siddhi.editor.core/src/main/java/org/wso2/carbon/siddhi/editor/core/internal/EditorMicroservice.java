@@ -35,6 +35,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.config.ConfigurationException;
 import org.wso2.carbon.config.provider.ConfigProvider;
 import org.wso2.carbon.siddhi.editor.core.EditorSiddhiAppRuntimeService;
 import org.wso2.carbon.siddhi.editor.core.Workspace;
@@ -53,6 +54,7 @@ import org.wso2.carbon.siddhi.editor.core.util.LogEncoder;
 import org.wso2.carbon.siddhi.editor.core.util.MimeMapper;
 import org.wso2.carbon.siddhi.editor.core.util.SecurityUtil;
 import org.wso2.carbon.siddhi.editor.core.util.SourceEditorUtils;
+import org.wso2.carbon.siddhi.editor.core.util.configreader.ConfigReader;
 import org.wso2.carbon.siddhi.editor.core.util.designview.beans.EventFlow;
 import org.wso2.carbon.siddhi.editor.core.util.designview.codegenerator.CodeGenerator;
 import org.wso2.carbon.siddhi.editor.core.util.designview.deserializers.DeserializersRegisterer;
@@ -79,7 +81,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -452,6 +453,28 @@ public class EditorMicroservice implements Microservice {
                     .build();
         }
     }
+
+    @POST
+    @Path("/workspace/configurations")
+    @Produces("application/json")
+    public Response configurations() {
+//      ConfigReader configReader = new ConfigReader();
+//      return configReader.readConfigs();
+        try {
+            Map<String, String> servers = (Map<String, String>) configProvider.getConfigurationObject("wso2.editor.siddhiapp.deployer");
+            for(Map.Entry<String, String> entry : servers.entrySet()) {
+                String url = entry.getKey();
+                String credentials = entry.getValue();
+                System.out.println(url + " :::: " + credentials);
+            }
+
+            return Response.ok().entity(servers).build();
+        } catch (ConfigurationException e) {
+            return Response.serverError().build();
+        }
+
+    }
+
 
     @POST
     @Path("/workspace/read/sample")
