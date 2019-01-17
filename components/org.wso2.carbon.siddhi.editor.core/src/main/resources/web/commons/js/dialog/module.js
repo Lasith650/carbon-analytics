@@ -16,24 +16,26 @@
  * under the License.
  */
 
-define(['./save-to-file-dialog','./replace-confirm-dialog','./open-file-dialog','./close-confirm-dialog',
-        './import-file-dialog', './export-file-dialog','./settings-dialog','./close-all-confirm-dialog',
-        './delete-confirm-dialog','./open-sample-file-dialog', './docker-export-dialog', './sample-event-dialog'],
-    function (SaveToFileDialog,ReplaceConfirmDialog,OpenFileDialog,CloseConfirmDialog,ImportFileDialog,
-              ExportFileDialog,SettingsDialog,CloseAllConfirmDialog,DeleteConfirmDialog,OpenSampleFileDialog,
-              DockerExportDialog, SampleEventDialog) {
-    return {
-        save_to_file_dialog: SaveToFileDialog,
-        open_file_dialog: OpenFileDialog,
-        CloseConfirmDialog: CloseConfirmDialog,
-        ReplaceConfirmDialog: ReplaceConfirmDialog,
-        import_file_dialog: ImportFileDialog,
-        export_file_dialog: ExportFileDialog,
-        settings_dialog: SettingsDialog,
-        CloseAllConfirmDialog: CloseAllConfirmDialog,
-        DeleteConfirmDialog: DeleteConfirmDialog,
-        open_sample_file_dialog: OpenSampleFileDialog,
-        docker_export_dialog: DockerExportDialog,
-        sample_event_dialog: SampleEventDialog
-    };
-});
+define(['./save-to-file-dialog', './replace-confirm-dialog', './open-file-dialog', './close-confirm-dialog',
+        './import-file-dialog', './export-file-dialog', './settings-dialog', './close-all-confirm-dialog',
+        './delete-confirm-dialog', './open-sample-file-dialog', './docker-export-dialog', './sample-event-dialog',
+        './deploy-file-dialog'],
+    function (SaveToFileDialog, ReplaceConfirmDialog, OpenFileDialog, CloseConfirmDialog, ImportFileDialog,
+              ExportFileDialog, SettingsDialog, CloseAllConfirmDialog, DeleteConfirmDialog, OpenSampleFileDialog,
+              DockerExportDialog, SampleEventDialog, DeployFileDialog) {
+        return {
+            save_to_file_dialog: SaveToFileDialog,
+            open_file_dialog: OpenFileDialog,
+            CloseConfirmDialog: CloseConfirmDialog,
+            ReplaceConfirmDialog: ReplaceConfirmDialog,
+            import_file_dialog: ImportFileDialog,
+            export_file_dialog: ExportFileDialog,
+            settings_dialog: SettingsDialog,
+            CloseAllConfirmDialog: CloseAllConfirmDialog,
+            DeleteConfirmDialog: DeleteConfirmDialog,
+            open_sample_file_dialog: OpenSampleFileDialog,
+            docker_export_dialog: DockerExportDialog,
+            sample_event_dialog: SampleEventDialog,
+            deploy_file_dialog: DeployFileDialog,
+        };
+    });

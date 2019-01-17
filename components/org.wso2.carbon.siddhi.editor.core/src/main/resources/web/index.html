@@ -262,7 +262,7 @@
                 </div>
             </div>
             <!-- End: pop-over-design-view -->
-            <div class = "overlayed-container"></div>
+            <div class="overlayed-container"></div>
             <!-- End: design-view-grid-container -->
         </div>
         <!-- End: design view container -->
@@ -1014,245 +1014,247 @@
     </div>
 </div>
 
-<script id = "attribute-form-template" type = "text/x-handlebars-template">
+<script id="attribute-form-template" type="text/x-handlebars-template">
     <h4>Attributes</h4>
     <ul>
-        <div id = "attribute-div">
+        <div id="attribute-div">
             {{#each this}}
-            <li class = "attribute clearfix">
-                <div class = "clearfix">
-                    <div class = "attr-content">
-                        <input type = "text" value = "{{name}}" class = "attr-name"/>
-                        <select class = "attr-type">
-                            <option value = "string"> string </option>
-                            <option value = "int"> int </option>
-                            <option value = "long"> long </option>
-                            <option value = "float"> float </option>
-                            <option value = "double"> double </option>
-                            <option value = "bool"> bool </option>
-                            <option value = "object"> object </option>
+            <li class="attribute clearfix">
+                <div class="clearfix">
+                    <div class="attr-content">
+                        <input type="text" value="{{name}}" class="attr-name"/>
+                        <select class="attr-type">
+                            <option value="string"> string</option>
+                            <option value="int"> int</option>
+                            <option value="long"> long</option>
+                            <option value="float"> float</option>
+                            <option value="double"> double</option>
+                            <option value="bool"> bool</option>
+                            <option value="object"> object</option>
                         </select>
                     </div>
-                    <div class = "attr-nav"></div>
+                    <div class="attr-nav"></div>
                 </div>
-                <label class = "error-message"></label>
+                <label class="error-message"></label>
             </li>
             {{/each}}
         </div>
     </ul>
-    <button id="btn-add-attribute" class="btn btn-default"> + Attribute </button>
+    <button id="btn-add-attribute" class="btn btn-default"> + Attribute</button>
 </script>
 
-<script id = "annotation-form-template" type = "text/x-handlebars-template">
+<script id="annotation-form-template" type="text/x-handlebars-template">
     <h4>Annotations</h4>
-    <div id = "annotation-div">
+    <div id="annotation-div">
         {{#if this}}
         <ul>
             {{#each this}}
-                {{> recursiveAnnotation this}}
+            {{> recursiveAnnotation this}}
             {{/each}}
         </ul>
         {{/if}}
     </div>
     <br>
-    <button id = "btn-add-annotation" class = "btn btn-default"> + Annotation </button>
-    <button id = "btn-add-key-val" class = "btn btn-default" style = "display: none"> + Property </button>
-    <button id = "btn-del-annotation" class = "btn btn-default" style = "display: none"> Delete </button>
+    <button id="btn-add-annotation" class="btn btn-default"> + Annotation</button>
+    <button id="btn-add-key-val" class="btn btn-default" style="display: none"> + Property</button>
+    <button id="btn-del-annotation" class="btn btn-default" style="display: none"> Delete</button>
 </script>
 
-<script id = "recursiveAnnotationPartial" type = "text/template">
+<script id="recursiveAnnotationPartial" type="text/template">
     {{#if predefined}}
-        <li data-jstree = '{"icon":"/editor/commons/images/annotation.png"}' class = "{{class}}"> {{name}}
-            <ul>
-                {{#each elements}}
-                <li data-jstree = '{"icon":"/editor/commons/images/properties.png"}' class="{{class}}"> {{key}}
-                    <ul>
-                        <li data-jstree = '{"icon":"/editor/commons/images/value.png"}'
-                            class = "annotation-value"> {{value}} </li>
-                    </ul>
-                </li>
-                {{/each}}
-    {{else}}
-        <li data-jstree = '{"icon":"/editor/commons/images/annotation.png"}' class = "annotation"> {{name}}
-            <ul>
-                {{#each elements}}
-                <li data-jstree = '{"icon":"/editor/commons/images/properties.png"}' class = "annotation-key"> {{key}}
-                    <ul>
-                        <li data-jstree = '{"icon":"/editor/commons/images/value.png"}'
-                            class = "annotation-value"> {{value}} </li>
-                    </ul>
-                </li>
-                {{/each}}
-    {{/if}}
-
-        {{#if annotations}}
-            {{#each annotations}}
-                {{> recursiveAnnotation this}}
+    <li data-jstree='{"icon":"/editor/commons/images/annotation.png"}' class="{{class}}"> {{name}}
+        <ul>
+            {{#each elements}}
+            <li data-jstree='{"icon":"/editor/commons/images/properties.png"}' class="{{class}}"> {{key}}
+                <ul>
+                    <li data-jstree='{"icon":"/editor/commons/images/value.png"}'
+                        class="annotation-value"> {{value}}
+                    </li>
+                </ul>
+            </li>
             {{/each}}
-        {{/if}}
-            </ul>
-        </li>
+            {{else}}
+            <li data-jstree='{"icon":"/editor/commons/images/annotation.png"}' class="annotation"> {{name}}
+                <ul>
+                    {{#each elements}}
+                    <li data-jstree='{"icon":"/editor/commons/images/properties.png"}' class="annotation-key"> {{key}}
+                        <ul>
+                            <li data-jstree='{"icon":"/editor/commons/images/value.png"}'
+                                class="annotation-value"> {{value}}
+                            </li>
+                        </ul>
+                    </li>
+                    {{/each}}
+                    {{/if}}
+
+                    {{#if annotations}}
+                    {{#each annotations}}
+                    {{> recursiveAnnotation this}}
+                    {{/each}}
+                    {{/if}}
+                </ul>
+            </li>
 </script>
 
 <script id="source-sink-map-store-form-template" type="text/template">
     {{#ifSourceOrSink id}}
-        <h3>{{addTitle id}} Configuration</h3>
-        <label class="clearfix"> * Type </label>
+    <h3>{{addTitle id}} Configuration</h3>
+    <label class="clearfix"> * Type </label>
+    <select id="{{id}}-type">
+        <option style="display:none" disabled selected value> -- select a type --</option>
+        {{else}}
+        {{#ifId id "map"}}
+        <h3> Mapping </h3>
+        {{/ifId}}
+        <label class="clearfix"> {{addTitle id}} Type </label>
         <select id="{{id}}-type">
-            <option style = "display:none" disabled selected value > -- select a type -- </option>
-    {{else}}
-             {{#ifId id "map"}}
-                <h3> Mapping </h3>
-             {{/ifId}}
-              <label class="clearfix"> {{addTitle id}} Type </label>
-              <select id="{{id}}-type">
-    {{/ifSourceOrSink}}
+            {{/ifSourceOrSink}}
 
             {{#each types}}
-                <option value="{{name}}">{{name}}</option>
+            <option value="{{name}}">{{name}}</option>
             {{/each}}
-    </select>
+        </select>
 </script>
 
-<script id = "source-sink-store-options-template" type = "text/template">
+<script id="source-sink-store-options-template" type="text/template">
     {{#if options}}
-        <h3> Options </h3>
-        <div id = "{{id}}-options">
-            {{#ifSourceOrSinkOrStore id}}
-                <div class = "sub-{{id}}-options-div">
+    <h3> Options </h3>
+    <div id="{{id}}-options">
+        {{#ifSourceOrSinkOrStore id}}
+        <div class="sub-{{id}}-options-div">
             {{/ifSourceOrSinkOrStore}}
             {{#each options}}
-                <div class = "option">
+            <div class="option">
                 {{#if optional}}
-                    {{#if value}}
-                        <div class = "clearfix">
-                            <label class = "option-name optional-option">
-                                <input type = "checkbox" class = "option-checkbox" checked> {{key}}
-                            </label>
-                            <i class = "fw fw-info option-desc">
-                                <span style = "display:none" class = "option-desc-content"> {{description}} </span>
-                            </i>
-                        </div>
-                        <div class = "clearix">
-                            <input class = "option-value" type = "text" value = "{{value}}">
-                        </div>
-                    {{else}}
-                        <div class="clearfix">
-                            <label class = "option-name optional-option">
-                                <input type = "checkbox" class = "option-checkbox"> {{key}}
-                            </label>
-                            <i class = "fw fw-info option-desc">
-                                <span style = "display:none" class="option-desc-content"> {{description}} </span>
-                            </i>
-                        </div>
-                        <div class="clearix">
-                            <input class = "option-value" type = "text" value="{{defaultValue}}" style ="display:none">
-                        </div>
-                    {{/if}}
-                        <label class = "error-message"></label>
-                {{else}}
-                    <div class="clearfix">
-                        <label class = "mandatory-option-symbol"> * </label>
-                        <label class = "option-name mandatory-option">
-                            {{key}}
-                        </label>
-                        <i class="fw fw-info option-desc">
-                            <span style="display:none" class="option-desc-content"> {{description}} </span>
-                        </i>
-                    </div>
-                    <div class = "clearix">
-                        <input class = "option-value" type = "text" value = "{{value}}">
-                    </div>
-                    <label class = "error-message"></label>
-                {{/if}}
+                {{#if value}}
+                <div class="clearfix">
+                    <label class="option-name optional-option">
+                        <input type="checkbox" class="option-checkbox" checked> {{key}}
+                    </label>
+                    <i class="fw fw-info option-desc">
+                        <span style="display:none" class="option-desc-content"> {{description}} </span>
+                    </i>
                 </div>
-            {{#ifSourceOrSinkOrStore ../id}}
-                {{#if (isDivisor (sum @index 1) ../options)}}
-                    </div>
-                    <div class = "sub-{{../id}}-options-div">
+                <div class="clearix">
+                    <input class="option-value" type="text" value="{{value}}">
+                </div>
+                {{else}}
+                <div class="clearfix">
+                    <label class="option-name optional-option">
+                        <input type="checkbox" class="option-checkbox"> {{key}}
+                    </label>
+                    <i class="fw fw-info option-desc">
+                        <span style="display:none" class="option-desc-content"> {{description}} </span>
+                    </i>
+                </div>
+                <div class="clearix">
+                    <input class="option-value" type="text" value="{{defaultValue}}" style="display:none">
+                </div>
                 {{/if}}
+                <label class="error-message"></label>
+                {{else}}
+                <div class="clearfix">
+                    <label class="mandatory-option-symbol"> * </label>
+                    <label class="option-name mandatory-option">
+                        {{key}}
+                    </label>
+                    <i class="fw fw-info option-desc">
+                        <span style="display:none" class="option-desc-content"> {{description}} </span>
+                    </i>
+                </div>
+                <div class="clearix">
+                    <input class="option-value" type="text" value="{{value}}">
+                </div>
+                <label class="error-message"></label>
+                {{/if}}
+            </div>
+            {{#ifSourceOrSinkOrStore ../id}}
+            {{#if (isDivisor (sum @index 1) ../options)}}
+        </div>
+        <div class="sub-{{../id}}-options-div">
+            {{/if}}
             {{/ifSourceOrSinkOrStore}}
             {{/each}}
             {{#ifSourceOrSinkOrStore id}}
-                </div>
-            {{/ifSourceOrSinkOrStore}}
-    {{/if}}
+        </div>
+        {{/ifSourceOrSinkOrStore}}
+        {{/if}}
     </div>
-    <div class = "customized-options" id = "customized-{{id}}-options">
-        <h3> <i> Customized Options </i> </h3>
-        <ul class = "cust-options">
+    <div class="customized-options" id="customized-{{id}}-options">
+        <h3><i> Customized Options </i></h3>
+        <ul class="cust-options">
             {{#each customizedOptions}}
-                <li class="option">
-                    <div class = "clearfix">
-                        <label> option.key </label>
-                        <input type="text" class="cust-option-key" value="{{key}}">
-                    </div>
-                    <div class = "clearfix">
-                        <label> option.value </label>
-                        <input type = "text" class = "cust-option-value" value = "{{value}}">
-                        <a class = "btn-del-option"> <i class = "fw fw-delete"> </i></a>
-                    </div>
-                    <label class = "error-message"></label>
-                </li>
+            <li class="option">
+                <div class="clearfix">
+                    <label> option.key </label>
+                    <input type="text" class="cust-option-key" value="{{key}}">
+                </div>
+                <div class="clearfix">
+                    <label> option.value </label>
+                    <input type="text" class="cust-option-value" value="{{value}}">
+                    <a class="btn-del-option"> <i class="fw fw-delete"> </i></a>
+                </div>
+                <label class="error-message"></label>
+            </li>
             {{/each}}
         </ul>
-        <button type = "button" class = "btn btn-default btn-add-options" id = "btn-add-{{id}}-options"> </button>
+        <button type="button" class="btn btn-default btn-add-options" id="btn-add-{{id}}-options"></button>
     </div>
 </script>
 
-<script id = "source-sink-map-attribute-template" type = "text/template">
-    <div id = "mapper-attributes">
-        <div class = "attribute-labels clearfix">
-                {{#if this.0.key }} <label id = "attribute-key-label"> Key </label> {{/if}}
-                <label id = "attribute-value-label"> Value </label>
+<script id="source-sink-map-attribute-template" type="text/template">
+    <div id="mapper-attributes">
+        <div class="attribute-labels clearfix">
+            {{#if this.0.key }} <label id="attribute-key-label"> Key </label> {{/if}}
+            <label id="attribute-value-label"> Value </label>
         </div>
         {{#each this}}
-        <div class = "attribute">
-                <div class = "clearfix">
-                {{#if key }} <input type = "text" value = "{{key}}" class = "attr-key" readonly/> {{/if}}
-                <input type = "text" value = "{{value}}" class = "attr-value"/>
-                </div>
-                <label class = "error-message"></label>
+        <div class="attribute">
+            <div class="clearfix">
+                {{#if key }} <input type="text" value="{{key}}" class="attr-key" readonly/> {{/if}}
+                <input type="text" value="{{value}}" class="attr-value"/>
+            </div>
+            <label class="error-message"></label>
         </div>
         {{/each}}
     </div>
 </script>
 
-<script id = "table-store-annotation-template" type = "text/template">
+<script id="table-store-annotation-template" type="text/template">
     <h4> Annotations </h4>
-    <div id = "table-annotations">
-            {{#each this}}
-                <div class = "clearfix table-annotation">
-                    <div class="clearfix">
-                        <label class = "annotation-name">
-                            {{#if isChecked}}
-                                <input type = "checkbox" class="annotation-checkbox" checked> @{{name}}
-                            {{else}}
-                                <input type = "checkbox" class="annotation-checkbox"> @{{name}}
-                            {{/if}}
-                        </label>
-                    </div>
+    <div id="table-annotations">
+        {{#each this}}
+        <div class="clearfix table-annotation">
+            <div class="clearfix">
+                <label class="annotation-name">
                     {{#if isChecked}}
-                        <div class="annotation-content">
-                     {{else}}
-                            <div class="annotation-content" style="display:none">
+                    <input type="checkbox" class="annotation-checkbox" checked> @{{name}}
+                    {{else}}
+                    <input type="checkbox" class="annotation-checkbox"> @{{name}}
                     {{/if}}
-                        <ul>
+                </label>
+            </div>
+            {{#if isChecked}}
+            <div class="annotation-content">
+                {{else}}
+                <div class="annotation-content" style="display:none">
+                    {{/if}}
+                    <ul>
                         {{#each values}}
-                            <li class = "clearfix table-annotation-value">
-                                <div class="clearfix">
-                                    <input type = "text" value = "{{value}}" class = "annotation-value"/>
-                                    <a class = "btn-del-annot-value"> <i class = "fw fw-delete"> </i></a>
-                                </div>
-                                <label class="error-message"></label>
-                            </li>
+                        <li class="clearfix table-annotation-value">
+                            <div class="clearfix">
+                                <input type="text" value="{{value}}" class="annotation-value"/>
+                                <a class="btn-del-annot-value"> <i class="fw fw-delete"> </i></a>
+                            </div>
+                            <label class="error-message"></label>
+                        </li>
                         {{/each}}
-                        </ul>
-                        <button type = "button" class = "btn btn-default btn-add-annot-value"> + Value </button>
-                    </div>
+                    </ul>
+                    <button type="button" class="btn btn-default btn-add-annot-value"> + Value</button>
                 </div>
+            </div>
             {{/each}}
-    </div>
+        </div>
 </script>
 
 <!--Start: Settings Modal-->
@@ -1369,7 +1371,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" id="exportButton"
-                        disabled="disabled">Export</button>
+                        disabled="disabled">Export
+                </button>
             </div>
         </div>
     </div>
@@ -1483,6 +1486,7 @@
             edit_menu: "commons/js/menu-bar/edit-menu",
             run_menu: "commons/js/menu-bar/run-menu",
             tools_menu: "commons/js/menu-bar/tools-menu",
+            deploy_menu: "commons/js/menu-bar/deploy-menu",
             menu_item: "commons/js/menu-bar/menu-item",
             file_browser: "commons/js/file-browser/file-browser",
             undo_manager: "commons/js/undo-manager/undo-manager",
@@ -1546,7 +1550,7 @@
             queryOutputUpdateOrInsertInto: "js/design-view/elements/queries/query-sub-elements/query-output/query-output-types/query-output-update-or-insert-into",
             // queries
             joinQuerySource: "js/design-view/elements/queries/query-sub-elements/query-input/join-query-input/sub-elements/join-query-source",
-            joinQueryInput : "js/design-view/elements/queries/query-sub-elements/query-input/join-query-input/join-query-input",
+            joinQueryInput: "js/design-view/elements/queries/query-sub-elements/query-input/join-query-input/join-query-input",
             partition: "js/design-view/elements/partitions/partition",
             partitionWith: "js/design-view/elements/partitions/partition-sub-elements/partition-with",
             patternOrSequenceQueryInput: "js/design-view/elements/queries/query-sub-elements/query-input/pattern-or-sequence-query-input/pattern-or-sequence-query-input",
@@ -1603,9 +1607,9 @@
             baseUrl: window.location.protocol + "//" + window.location.host + '/editor',
             baseUrlHost: window.location.host,
             container: "#page-content",
-            welcome:{
-                container:"#welcome-container",
-                cssClass :{
+            welcome: {
+                container: "#welcome-container",
+                cssClass: {
                     parent: "initial-background-container",
                     outer: "initial-welcome-container",
                     leftPane: "left-pane",
@@ -1629,58 +1633,57 @@
                     "artifacts/AggregateDataIncrementally/AggregateDataIncrementally.siddhi"]
             },
             stream_predefined_annotations: [
-            {
-                predefined: true,
-                name: 'Async',
-                class: 'optional-annotation',
-                isMandatory: false,
-                elements: [
-                    {
-                        key: 'buffer.size',
-                        value: '256',
-                        class: 'mandatory-key',
-                        isMandatory: true
-                    },
-                    {
-                        key: 'workers',
-                        value: '2',
-                        class: 'mandatory-key',
-                        isMandatory: true
-                    },
-                    {
-                        key: 'batch.size.max',
-                        value: '5',
-                        class: 'mandatory-key',
-                        isMandatory: true
-                    },
-                ]
-            }
+                {
+                    predefined: true,
+                    name: 'Async',
+                    class: 'optional-annotation',
+                    isMandatory: false,
+                    elements: [
+                        {
+                            key: 'buffer.size',
+                            value: '256',
+                            class: 'mandatory-key',
+                            isMandatory: true
+                        },
+                        {
+                            key: 'workers',
+                            value: '2',
+                            class: 'mandatory-key',
+                            isMandatory: true
+                        },
+                        {
+                            key: 'batch.size.max',
+                            value: '5',
+                            class: 'mandatory-key',
+                            isMandatory: true
+                        },
+                    ]
+                }
             ],
             table_predefined_annotations: [
-            {
-                name: "primaryKey",
-                values: [{
-                    value: ""
-                }],
-                isChecked: false
-            },
-            {
-                name: "index",
-                values: [{
-                    value: ""
-                }],
-                isChecked: false
-            }
+                {
+                    name: "primaryKey",
+                    values: [{
+                        value: ""
+                    }],
+                    isChecked: false
+                },
+                {
+                    name: "index",
+                    values: [{
+                        value: ""
+                    }],
+                    isChecked: false
+                }
             ],
-            services:   {
-                workspace:  {
-                   endpoint: window.location.protocol + "//" + window.location.host + '/editor/workspace'
+            services: {
+                workspace: {
+                    endpoint: window.location.protocol + "//" + window.location.host + '/editor/workspace'
                 }
             },
             alerts: {
                 container: "#alerts-container",
-                cssClass: {
-                }
+                cssClass: {}
             },
             menu_bar: {
                 container: "#menu-bar-container",
@@ -1726,7 +1729,7 @@
                     id: "revert_icon-siddhi-app"
                 }
             },
-            event_simulator : {
+            event_simulator: {
                 container: ".sidebar-left",
                 activateBtn: '.event-simulator-activate-btn',
                 separator: '.sidebar-left-separator',
@@ -1734,7 +1737,7 @@
                 leftOffset: 40,
                 separatorOffset: 5,
                 defaultWidth: 380,
-                resizeLimits:{
+                resizeLimits: {
                     minX: 200,
                     maxX: 800
                 },
@@ -1780,7 +1783,7 @@
                 leftOffset: 40,
                 separatorOffset: 5,
                 defaultWidth: 290,
-                resizeLimits:{
+                resizeLimits: {
                     minX: 200,
                     maxX: 800
                 },
@@ -1790,7 +1793,7 @@
                     openFolderButton: 'btn  btn-default open-folder-button'
                 }
             },
-            settings_dialog:{
+            settings_dialog: {
                 selector: "#modalSettings",
                 submit_button: "#saveSettingsButton"
             },
@@ -1798,7 +1801,7 @@
                 selector: '#modalDockerExport',
                 submitButton: '#exportButton'
             },
-            sample_event_dialog:{
+            sample_event_dialog: {
                 selector: "#modalSampleEvent",
                 submit_button: "#generateSampleEventButton"
             },
@@ -1962,7 +1965,7 @@
                                 scroll_margin: '20',
                                 mode: 'ace/mode/siddhi'
                             },
-                            cssClass:{
+                            cssClass: {
                                 text_editor_class: 'text-editor',
                                 outer_box: 'outer-box',
                                 svg_container: 'svg-container',
@@ -1971,13 +1974,13 @@
                                 panel_icon: 'panel-icon',
                                 service_icon: 'fw fw-service fw-inverse',
                                 struct_icon: 'fw fw-struct fw-inverse',
-                                connector_icon:'fw fw-connector fw-inverse',
-                                function_icon:'fw fw-function fw-inverse',
-                                main_function_icon:'fw fw-main-function fw-inverse',
-                                title_link:'collapsed canvas-title',
-                                panel_right_icon:'fw fw-up pull-right right-icon-clickable collapser hoverable',
+                                connector_icon: 'fw fw-connector fw-inverse',
+                                function_icon: 'fw fw-function fw-inverse',
+                                main_function_icon: 'fw fw-main-function fw-inverse',
+                                title_link: 'collapsed canvas-title',
+                                panel_right_icon: 'fw fw-up pull-right right-icon-clickable collapser hoverable',
                                 head_div: 'canvas-heading',
-                                body_div:'panel-collapse collapse',
+                                body_div: 'panel-collapse collapse',
                                 canvas: 'panel-body collapse in',
                                 design_view_drop: 'design-view-hover',
                                 canvas_container: 'canvas-container',
@@ -1992,7 +1995,7 @@
                                 type_struct_icon: 'fw fw-dgm-service fw-inverse',
                                 canvas_heading_new: 'canvas-heading-new'
                             },
-                            dialog_boxes:{
+                            dialog_boxes: {
                                 parser_error: "#parserErrorModel"
                             }
                         }
@@ -2004,7 +2007,6 @@
         app.render();
         app.displayInitialView();
     });
-
 
 
 </script>

@@ -19,9 +19,7 @@
 package org.wso2.carbon.siddhi.editor.core.internal;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -36,6 +34,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.carbon.analytics.idp.client.core.api.AnalyticsHttpClientBuilderService;
 import org.wso2.carbon.config.provider.ConfigProvider;
 import org.wso2.carbon.siddhi.editor.core.EditorSiddhiAppRuntimeService;
 import org.wso2.carbon.siddhi.editor.core.Workspace;
@@ -48,6 +47,7 @@ import org.wso2.carbon.siddhi.editor.core.commons.response.MetaDataResponse;
 import org.wso2.carbon.siddhi.editor.core.commons.response.Status;
 import org.wso2.carbon.siddhi.editor.core.commons.response.ValidationSuccessResponse;
 import org.wso2.carbon.siddhi.editor.core.exception.DockerGenerationException;
+import org.wso2.carbon.siddhi.editor.core.exception.SiddhiAppsApiHelperException;
 import org.wso2.carbon.siddhi.editor.core.internal.local.LocalFSWorkspace;
 import org.wso2.carbon.siddhi.editor.core.util.Constants;
 import org.wso2.carbon.siddhi.editor.core.util.DebugCallbackEvent;
@@ -63,6 +63,7 @@ import org.wso2.carbon.siddhi.editor.core.util.designview.deserializers.Deserial
 import org.wso2.carbon.siddhi.editor.core.util.designview.designgenerator.DesignGenerator;
 import org.wso2.carbon.siddhi.editor.core.util.designview.exceptions.CodeGenerationException;
 import org.wso2.carbon.siddhi.editor.core.util.designview.exceptions.DesignGenerationException;
+import org.wso2.carbon.siddhi.editor.core.util.siddhiappdeployer.SiddhiAppApiHelper;
 import org.wso2.carbon.stream.processor.common.EventStreamService;
 import org.wso2.carbon.stream.processor.common.SiddhiAppRuntimeService;
 import org.wso2.carbon.stream.processor.common.utils.config.FileConfigManager;
@@ -315,6 +316,52 @@ public class EditorMicroservice implements Microservice {
             return Response.serverError().entity("failed")
                     .build();
         }
+    }
+
+    @POST
+    @Path("/workspace/deploy")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject deploy(JsonElement element) throws IOException, SiddhiAppsApiHelperException {
+        JsonArray success = new JsonArray();
+        JsonArray failure = new JsonArray();
+        JsonObject deploymentStatus = new JsonObject();
+
+        Integer siddhiFilesCount = element.getAsJsonObject().getAsJsonArray("siddhiFileList").size();
+        Integer serverListCount = element.getAsJsonObject().getAsJsonArray("serverList").size();
+        String location = (Paths.get(Constants.RUNTIME_PATH,
+                Constants.DIRECTORY_DEPLOYMENT, Constants.DIRECTORY_WORKSPACE)).toString();
+
+        SiddhiAppApiHelper siddhiAppApiHelper = new SiddhiAppApiHelper();
+
+        for (int i = 0; i < siddhiFilesCount; i++) {
+            String fileName = element.getAsJsonObject().getAsJsonArray("siddhiFileList").get(i).getAsJsonObject().get("fileName").toString().replaceAll("\"", "");
+            String sidhiFile = new String((Files.readAllBytes(Paths.get(location + "/" + fileName))), "UTF-8");
+            for (int x = 0; x < serverListCount; x++) {
+                String host = element.getAsJsonObject().getAsJsonArray("serverList").get(x).getAsJsonObject().get("host").toString().replaceAll("\"", "");
+                String port = element.getAsJsonObject().getAsJsonArray("serverList").get(x).getAsJsonObject().get("port").toString().replaceAll("\"", "");
+                String hostAndPort = host + ":" + port;
+                String username = element.getAsJsonObject().getAsJsonArray("serverList").get(x).getAsJsonObject().get("username").toString().replaceAll("\"", "");
+                String password = element.getAsJsonObject().getAsJsonArray("serverList").get(x).getAsJsonObject().get("password").toString().replaceAll("\"", "");
+                try {
+                    boolean response = siddhiAppApiHelper.deploySiddhiApp(hostAndPort, username, password, sidhiFile, fileName);
+                    if (response == true) {
+                        String state = fileName + " was successfully deployed to " + hostAndPort;
+                        System.out.println(state);
+                        JsonPrimitive status = new JsonPrimitive(fileName + " was successfully deployed to " + hostAndPort);
+                        success.add(status);
+                    }
+                } catch (SiddhiAppsApiHelperException e) {
+                    System.out.println(e);
+                    JsonPrimitive status = new JsonPrimitive(String.valueOf(e));
+                    failure.add(status);
+                }
+            }
+        }
+        deploymentStatus.add("success", success);
+        deploymentStatus.add("failure", failure);
+        System.out.println("sssssssssssss" + deploymentStatus);
+        return deploymentStatus;
     }
 
     @GET
@@ -910,9 +957,9 @@ public class EditorMicroservice implements Microservice {
     /**
      * Get sample event for a particular event stream.
      *
-     * @param appName Siddhi app name.
+     * @param appName    Siddhi app name.
      * @param streamName Stream name.
-     * @param eventType The event type os the requested event (json, xml, text).
+     * @param eventType  The event type os the requested event (json, xml, text).
      * @return Sample event
      */
     @GET
@@ -1057,5 +1104,20 @@ public class EditorMicroservice implements Microservice {
         } catch (IOException e) {
             log.error("Error while reading the sample descriptions.", e);
         }
+    }
+
+    @Reference(
+            name = "carbon.anaytics.common.clientservice",
+            service = AnalyticsHttpClientBuilderService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unregisterAnalyticsHttpClient"
+    )
+    protected void registerAnalyticsHttpClient(AnalyticsHttpClientBuilderService service) {
+        EditorDataHolder.getInstance().setClientBuilderService(service);
+    }
+
+    protected void unregisterAnalyticsHttpClient(AnalyticsHttpClientBuilderService service) {
+        EditorDataHolder.getInstance().setClientBuilderService(null);
     }
 }
